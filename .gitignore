@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# Banco de dados (gerado pelo init_db.py — não commitar dados locais)
+db/techcorp.db
+
+# Logs
+logs/
+*.log
+
+# VS Code (manter apenas mcp.json)
+.vscode/*
+!.vscode/mcp.json
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.env.local
