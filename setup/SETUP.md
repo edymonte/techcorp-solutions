@@ -157,16 +157,39 @@ Chamados inseridos:
 
 ## Verificação Final
 
-Execute os testes para confirmar que tudo está funcionando:
+Execute o script de validação do ambiente:
 
 ```bash
-pytest tests/ -v
+python setup/verificar_ambiente.py
 ```
 
-Todos os testes devem passar. Se algum falhar, consultar o guia de troubleshooting em `docs/runbooks/pipeline-troubleshooting.md`.
+O script verifica automaticamente:
+
+| # | O que checa | Esperado |
+|---|-------------|----------|
+| 1 | Python 3.11+ | `✔ Python 3.11.x` |
+| 2 | flask, pyjwt, pytest instalados | `✔ ... instalado` |
+| 3 | Testes da aplicação (pytest) | alguns falham — isso é intencional (bugs do workshop) |
+| 4 | Banco `db/techcorp.db` existe | `✔ db/techcorp.db encontrado` |
+| 5 | Node.js / npx | `✔ node v20.x.x` |
+| 6 | Ollama rodando + modelo llama3.2 | `✔ Ollama está rodando` |
+| 7 | AnythingLLM rodando | `✔ AnythingLLM está rodando` |
+| 8 | `.vscode/mcp.json` presente | `✔ .vscode/mcp.json presente` |
+
+**Saída esperada ao final:**
+```
+✔ 8 ok   ✘ 0 erro(s)   ⚠ 0 aviso(s)
+
+  Ambiente pronto para o workshop!
+```
+
+> **Nota sobre os testes com falha:** `test_token_expirado_deve_ser_rejeitado` e `test_pedido_quantidade_none_deve_levantar_pedido_invalido_error` vão **falhar propositalmente** — esses são os bugs que você vai corrigir nas semanas 2 e 4.
+
+Se algum item aparecer com `✘`, seguir a dica exibida pelo script.  
+Se travar, consultar `docs/runbooks/pipeline-troubleshooting.md`.
 
 ---
 
-## Pronto! 
+## Pronto!
 
 Seu ambiente está configurado. Aguarde as instruções do instrutor para começar o desafio.
