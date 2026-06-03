@@ -18,7 +18,21 @@ No workshop usamos dois servidores MCP:
 
 ---
 
-## Passo 1 — Verificar o arquivo `.vscode/mcp.json`
+## Passo 1 — Criar o Personal Access Token do GitHub
+
+1. Acessar: https://github.com/settings/tokens
+2. Clicar em **"Generate new token"** → "Generate new token (classic)"
+3. Nome: `techcorp-workshop-mcp`
+4. Expiração: 30 dias
+5. Marcar os escopos:
+   - ✅ `repo` (acesso completo ao repositório)
+   - ✅ `read:org` (ler organização, se aplicável)
+6. Clicar em **"Generate token"**
+7. **Copiar o token** — ele só aparece uma vez!
+
+---
+
+## Passo 2 — Verificar o arquivo `.vscode/mcp.json`
 
 O arquivo já está configurado no repositório:
 
@@ -26,8 +40,12 @@ O arquivo já está configurado no repositório:
 {
   "servers": {
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@2025.4.8"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:githubToken}"
+      }
     },
     "sqlite": {
       "type": "stdio",
@@ -39,19 +57,22 @@ O arquivo já está configurado no repositório:
 }
 ```
 
-**GitHub MCP** usa o servidor remoto oficial do GitHub — não requer token separado, autentica automaticamente via sua conta do GitHub Copilot já configurada no VS Code.
+Ambos os servidores rodam **localmente** — nenhuma dependência de serviços externos.
 
-**SQLite MCP** baixa o pacote `mcp-server-sqlite` via `npx` na primeira execução. A versão está fixada (`0.0.2`) para evitar breaking changes no dia do workshop.
+- **GitHub MCP** usa `@modelcontextprotocol/server-github@2025.4.8` via `npx`. A versão está fixada para garantir comportamento estável no dia do workshop.
+- **SQLite MCP** usa `mcp-server-sqlite@0.0.2` e lê diretamente o `techcorp.db` local.
+
+O `${input:githubToken}` faz o VS Code pedir o token na primeira vez — você não precisa colocar o token no arquivo.
 
 ---
 
-## Passo 2 — Ativar os servidores MCP no VS Code
+## Passo 3 — Ativar os servidores MCP no VS Code
 
 1. Abrir o VS Code no repositório (`code .`)
 2. Pressionar `Ctrl+Shift+P`
 3. Digitar: **"MCP: List Servers"**
 4. Deve aparecer `github` e `sqlite`
-5. O GitHub MCP autenticará automaticamente via sua conta Copilot já logada no VS Code
+5. Ao usar o MCP pela primeira vez no chat, o VS Code pedirá o token — colar o token gerado no Passo 1
 
 ---
 

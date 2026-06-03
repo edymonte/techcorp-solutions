@@ -1,8 +1,12 @@
 {
   "servers": {
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@2025.4.8"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:githubToken}"
+      }
     },
     "sqlite": {
       "type": "stdio",
@@ -14,5 +18,13 @@
         "${workspaceFolder}/db/techcorp.db"
       ]
     }
-  }
+  },
+  "inputs": [
+    {
+      "id": "githubToken",
+      "type": "promptString",
+      "description": "GitHub Personal Access Token (Settings > Developer settings > Tokens)",
+      "password": true
+    }
+  ]
 }
