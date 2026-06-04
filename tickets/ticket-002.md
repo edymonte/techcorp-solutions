@@ -36,7 +36,7 @@ Collecting techcorp_core
 
 ---
 
-## 🤖 Triagem N1 — AnythingLLM
+## 🤖 Triagem N1 — Bot de Suporte TechCorp
 
 > *Nota gerada automaticamente em 2026-06-10 09:52*
 

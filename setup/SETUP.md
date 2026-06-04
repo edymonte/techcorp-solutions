@@ -12,10 +12,9 @@
 |---|-----------|----------------|
 | 1 | Git + VS Code | Editor + controle de versão |
 | 2 | Python 3.11+ | Executar o código da TechCorp |
-| 3 | Docker Desktop | Roda Ollama e AnythingLLM em container |
-| 4 | Node.js | Necessário para o MCP GitHub |
+| 3 | Node.js | Necessário para o MCP GitHub |
 
-> **Ollama e AnythingLLM rodam via Docker** — não é necessário instalar nada separado para eles. O `setup.bat` cuida de tudo automaticamente.
+> Não é necessário Docker, Ollama ou qualquer serviço de IA local. O workshop usa **GitHub Copilot diretamente no VS Code** via `@workspace`.
 
 ---
 
@@ -48,22 +47,7 @@ python --version
 
 ---
 
-## Passo 3 — Docker Desktop
-
-1. Acessar https://docker.com/products/docker-desktop
-2. Baixar e instalar o **Docker Desktop for Windows**
-3. Após instalar, **abrir o Docker Desktop** e aguardar a baleia aparecer na barra de tarefas
-4. Verificar no terminal:
-
-```
-docker --version
-```
-
-> O Docker Desktop deve estar aberto e rodando **antes** de executar o `setup.bat`.
-
----
-
-## Passo 4 — Node.js (para MCP GitHub)
+## Passo 3 — Node.js (para MCP GitHub)
 
 1. Acessar https://nodejs.org/
 2. Baixar **LTS version** (Windows Installer)
@@ -80,11 +64,7 @@ Ver guia de configuração do MCP: [mcp-setup.md](mcp-setup.md)
 
 ---
 
-## Passo 6 — Fork e clone do repositório
-
-1. Acessar **https://github.com/edymonte/techcorp-solutions**
-2. Clicar em **Fork** → "Create fork"
-3. Abrir o terminal no Windows e clonar **sua fork**:
+## Passo 4 — Clonar o repositório
 
 ```bash
 git clone https://github.com/[instrutor]/techcorp-workshop.git
@@ -98,7 +78,7 @@ code .
 
 ---
 
-## Passo 6 — Executar o setup.bat
+## Passo 5 — Executar o setup.bat
 
 Dê duplo clique em **`setup.bat`** na raiz do projeto, ou execute no terminal:
 
@@ -109,15 +89,13 @@ setup.bat
 O script realiza automaticamente:
 1. Instala as dependências Python (`requirements.txt` e `requirements-dev.txt`)
 2. Cria o banco de dados SQLite (`db/techcorp.db`) com os tickets do workshop
-3. Inicia Ollama e AnythingLLM via Docker (`docker compose up -d`)
-4. Baixa o modelo `llama3.2` no container Ollama (se ainda não estiver)
-5. Executa `setup/verificar_ambiente.py` para validar tudo
+3. Executa `setup/verificar_ambiente.py` para validar tudo
 
-> Na primeira execução pode levar **~5 minutos** devido ao download do modelo (~2GB).
+> A execução leva **menos de 1 minuto**.
 
 ---
 
-## Passo 7 — Configurar MCP no VS Code
+## Passo 6 — Configurar MCP no VS Code
 
 1. Abrir `.vscode/mcp.json` no VS Code
 2. Criar um **Personal Access Token** no GitHub:
@@ -126,17 +104,6 @@ O script realiza automaticamente:
    - Marcar: `repo`, `read:org`
    - Copiar o token
 3. No VS Code, quando o MCP solicitar o token, colar o valor
-
----
-
-## Passo 8 — Configurar o workspace no AnythingLLM
-
-Após o `setup.bat` concluir, o AnythingLLM estará acessível em **http://localhost:3001**.
-
-A pasta `docs/` do projeto já é montada automaticamente no container.
-Ainda assim é necessário criar o workspace e indexar os documentos uma vez:
-
-Ver guia completo: [anythingllm-setup.md](anythingllm-setup.md)
 
 ---
 
@@ -157,13 +124,11 @@ O script verifica automaticamente:
 | 3 | Testes da aplicação (pytest) | alguns falham — isso é intencional (bugs do workshop) |
 | 4 | Banco `db/techcorp.db` existe | `✔ db/techcorp.db encontrado` |
 | 5 | Node.js / npx | `✔ node v20.x.x` |
-| 6 | Ollama rodando + modelo llama3.2 | `✔ Ollama está rodando` |
-| 7 | AnythingLLM rodando | `✔ AnythingLLM está rodando` |
-| 8 | `.vscode/mcp.json` presente | `✔ .vscode/mcp.json presente` |
+| 6 | `.vscode/mcp.json` presente | `✔ .vscode/mcp.json presente` |
 
 **Saída esperada ao final:**
 ```
-✔ 8 ok   ✘ 0 erro(s)   ⚠ 0 aviso(s)
+✔ 6 ok   ✘ 0 erro(s)   ⚠ 0 aviso(s)
 
   Ambiente pronto para o workshop!
 ```

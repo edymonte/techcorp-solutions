@@ -94,11 +94,11 @@ titulo("3. Testes da aplicação")
 # Testes que DEVEM falhar antes das correções do workshop (bugs intencionais)
 BUGS_INTENCIONAIS = {
     "test_pedido_quantidade_none_deve_levantar_pedido_invalido_error":
-        "Bug intencional Semana 2 (TICKET-001) — corrija em src/api/pedidos.py",
+        "Bug intencional Semana 2 (TICKET-001) — use o Copilot para investigar",
     "test_token_expirado_deve_ser_rejeitado":
-        "Bug intencional Semana 4 (TICKET-003) — corrija em src/auth/auth_service.py",
+        "Bug intencional Semana 4 (TICKET-003) — use o Copilot para investigar",
     "test_token_expirado_nao_pode_obter_perfil":
-        "Bug intencional Semana 4 (TICKET-003) — corrija em src/auth/auth_service.py",
+        "Bug intencional Semana 4 (TICKET-003) — use o Copilot para investigar",
 }
 
 raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -170,43 +170,7 @@ for cmd in ["node", "npx"]:
         erro(f"{cmd} não encontrado", "Instale Node.js LTS: https://nodejs.org e reabra o terminal")
 
 # ─────────────────────────────────────────────
-titulo("6. Ollama (LLM local)")
-
-if not checar_http("http://localhost:11434", "Ollama"):
-    erro("Ollama não está rodando", "Execute: docker compose up -d")
-else:
-    # Verifica modelo: tenta via Docker primeiro, depois via CLI local
-    modelo_verificado = False
-    for check_cmd in (
-        ["docker", "exec", "techcorp-ollama", "ollama", "list"],
-        ["ollama", "list"],
-    ):
-        try:
-            res = subprocess.run(check_cmd, capture_output=True, text=True, timeout=5)
-            if res.returncode == 0:
-                if "llama3.2" in res.stdout:
-                    ok("Modelo llama3.2 disponível")
-                else:
-                    aviso("Modelo llama3.2 não encontrado",
-                          "Execute: docker exec techcorp-ollama ollama pull llama3.2")
-                modelo_verificado = True
-                break
-        except Exception:
-            continue
-    if not modelo_verificado:
-        aviso("Não foi possível verificar modelos do Ollama")
-
-# ─────────────────────────────────────────────
-titulo("7. AnythingLLM (interface RAG)")
-
-if not checar_http("http://localhost:3001", "AnythingLLM"):
-    aviso(
-        "AnythingLLM não está rodando",
-        "Execute: docker compose up -d",
-    )
-
-# ─────────────────────────────────────────────
-titulo("8. MCP — configuração")
+titulo("6. MCP — configuração")
 
 mcp_path = os.path.join(raiz, ".vscode", "mcp.json")
 if os.path.exists(mcp_path):

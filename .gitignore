@@ -31,9 +31,11 @@ docs/*.pptx
 logs/
 *.log
 
-# VS Code (manter apenas mcp.json)
+# VS Code (manter apenas arquivos essenciais do workshop)
 .vscode/*
 !.vscode/mcp.json
+!.vscode/extensions.json
+!.vscode/settings.json
 
 # OS
 .DS_Store

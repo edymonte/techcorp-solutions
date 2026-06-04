@@ -37,7 +37,7 @@ Este ticket agrupa 3 incidentes correlacionados abertos nos últimos 15 minutos.
 
 ---
 
-## 🤖 Triagem N1 — AnythingLLM
+## 🤖 Triagem N1 — Bot de Suporte TechCorp
 
 > *Nota gerada automaticamente em 2026-06-20 17:08*
 
