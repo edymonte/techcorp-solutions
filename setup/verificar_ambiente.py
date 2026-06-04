@@ -1,12 +1,12 @@
 """
-Verificação de Ambiente — TechCorp Solutions Workshop
+Setup e Verificação de Ambiente — TechCorp Solutions Workshop
 Execute: python setup/verificar_ambiente.py
+     ou: clique duas vezes em setup.bat
 """
 
 import sys
 import subprocess
-import urllib.request
-import urllib.error
+import importlib
 import os
 
 VERDE = "\033[92m"
@@ -57,8 +57,10 @@ def checar_http(url, nome):
 
 # ─────────────────────────────────────────────
 print(f"\n{NEGRITO}{'═' * 50}{RESET}")
-print(f"{NEGRITO}  VERIFICAÇÃO DE AMBIENTE — TechCorp Workshop{RESET}")
+print(f"{NEGRITO}  TechCorp Workshop — Preparando seu ambiente{RESET}")
 print(f"{NEGRITO}{'═' * 50}{RESET}")
+
+raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ─────────────────────────────────────────────
 titulo("1. Python")
@@ -75,23 +77,57 @@ else:
 # ─────────────────────────────────────────────
 titulo("2. Dependências Python")
 
-pacotes = {
-    "pytest": "pytest==8.2.0 (requirements-dev.txt)",
-    "jwt": "pyjwt==2.8.0 (requirements.txt)",
-    "flask": "flask==3.0.3 (requirements.txt)",
-}
+print(f"     instalando pacotes...")
+req_files = []
+for req in ["requirements.txt", "requirements-dev.txt"]:
+    path = os.path.join(raiz, req)
+    if os.path.exists(path):
+        req_files += ["-r", path]
 
-for modulo, origem in pacotes.items():
-    try:
-        __import__(modulo)
-        ok(f"{modulo} instalado")
-    except ImportError:
-        erro(f"{modulo} não encontrado", f"Execute: pip install -r requirements-dev.txt  [{origem}]")
+res_pip = subprocess.run(
+    [sys.executable, "-m", "pip", "install", "--quiet"] + req_files,
+    capture_output=True,
+    text=True,
+    cwd=raiz,
+)
+if res_pip.returncode != 0:
+    erro("Falha ao instalar pacotes", "Verifique sua conexão e tente novamente")
+else:
+    importlib.invalidate_caches()
+    pacotes = {
+        "pytest": "pytest (requirements-dev.txt)",
+        "jwt": "pyjwt (requirements.txt)",
+        "flask": "flask (requirements.txt)",
+    }
+    for modulo, origem in pacotes.items():
+        try:
+            __import__(modulo)
+            ok(f"{modulo} instalado")
+        except ImportError:
+            erro(f"{modulo} não encontrado", f"[{origem}]")
 
 # ─────────────────────────────────────────────
-titulo("3. Testes da aplicação")
+titulo("3. Banco de dados SQLite")
 
-# Testes que DEVEM falhar antes das correções do workshop (bugs intencionais)
+db_path = os.path.join(raiz, "db", "techcorp.db")
+if os.path.exists(db_path):
+    ok("db/techcorp.db encontrado")
+else:
+    print(f"     criando banco de dados...")
+    res_db = subprocess.run(
+        [sys.executable, "db/init_db.py"],
+        capture_output=True,
+        text=True,
+        cwd=raiz,
+    )
+    if res_db.returncode == 0:
+        ok("db/techcorp.db criado com sucesso")
+    else:
+        erro("Falha ao criar db/techcorp.db", "Execute: python db/init_db.py")
+
+# ─────────────────────────────────────────────
+titulo("4. Testes da aplicação")
+
 BUGS_INTENCIONAIS = {
     "test_pedido_quantidade_none_deve_levantar_pedido_invalido_error":
         "Bug intencional Semana 2 (TICKET-001) — use o Copilot para investigar",
@@ -101,7 +137,6 @@ BUGS_INTENCIONAIS = {
         "Bug intencional Semana 4 (TICKET-003) — use o Copilot para investigar",
 }
 
-raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 resultado = subprocess.run(
     [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=no"],
     capture_output=True,
@@ -141,15 +176,6 @@ else:
 
 for nome, descricao in falhas_intencionais:
     aviso(f"pytest (esperado): {nome}", descricao)
-
-# ─────────────────────────────────────────────
-titulo("4. Banco de dados SQLite")
-
-db_path = os.path.join(raiz, "db", "techcorp.db")
-if os.path.exists(db_path):
-    ok(f"db/techcorp.db encontrado")
-else:
-    erro("db/techcorp.db não existe", "Execute: python db/init_db.py")
 
 # ─────────────────────────────────────────────
 titulo("5. Node.js / npx")
