@@ -101,7 +101,7 @@ Ver guia de configuração do MCP: [setup/mcp-setup.md](mcp-setup.md)
 
 ## Passo 6 — Fork e clone do repositório
 
-1. Acessar **https://github.com/[instrutor]/techcorp-solutions**
+1. Acessar **https://github.com/edymonte/techcorp-solutions**
 2. Clicar em **Fork** → "Create fork"
 3. Abrir o terminal no Windows e clonar **sua fork**:
 
