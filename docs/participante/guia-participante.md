@@ -5,17 +5,42 @@
 
 ---
 
-## Antes de cada semana — faça sempre
+## Preparação do ambiente — faça apenas uma vez
 
-```bash
-# 1. Confirme que o ambiente está ok
-python setup/verificar_ambiente.py
+Na primeira vez que acessar o repositório, execute o **setup** clicando duas vezes no arquivo:
 
-# 2. Confirme os bugs intencionais (saída esperada: 3 ⚠ avisos, 0 ✘ erros)
-python -m pytest tests/ --tb=no -q
+```
+setup.bat
 ```
 
-Se aparecer ✘ erro (não ⚠ aviso), chame o facilitador antes de continuar.
+Esse script faz **tudo automaticamente**:
+1. Verifica se o Python está instalado (se não estiver, abre o site de download)
+2. Instala todos os pacotes do projeto (`requirements.txt` e `requirements-dev.txt`)
+3. Cria o banco de dados local (`db/techcorp.db`)
+4. Executa os testes para confirmar o estado inicial do ambiente
+5. Verifica Node.js, npx e a configuração do MCP
+
+> ⚠️ Execute o `setup.bat` **somente uma vez**, antes da primeira etapa. Nas semanas seguintes, use apenas o comando abaixo.
+
+---
+
+## Antes de cada semana — verificação rápida
+
+Nas semanas 2 e 3, antes de começar, execute apenas a verificação:
+
+```bash
+python setup/verificar_ambiente.py
+```
+
+Esse script **não instala nada** — ele apenas confere se tudo continua funcionando:
+
+| Saída esperada | Significa |
+|---|---|
+| `✔ 9 ok` | Tudo certo |
+| `⚠ 3 aviso(s)` | Os 3 bugs intencionais do workshop — **esperado e correto** |
+| `✘ 0 erro(s)` | Nenhum problema real |
+
+Se aparecer `✘ erro` (não `⚠ aviso`), **chame o facilitador antes de continuar**.
 
 ---
 
