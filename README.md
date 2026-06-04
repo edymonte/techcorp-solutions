@@ -37,9 +37,7 @@ Workshop_validation/
 │   └── prompts/
 │       ├── investigar-bug-ticket.prompt.md
 │       ├── corrigir-pipeline.prompt.md
-│       ├── resposta-incidente-multiplo.prompt.md
-│       ├── close-ticket.prompt.md
-│       └── troubleshoot-pipeline.prompt.md
+│       └── resposta-incidente-multiplo.prompt.md
 ├── docs/
 │   ├── facilitador/
 │   │   └── roteiro-facilitador.md     ← roteiro do facilitador
@@ -64,6 +62,7 @@ Workshop_validation/
 ├── setup/
 │   ├── SETUP.md
 │   ├── gerar_evidencia.py
+│   ├── gerar_apresentacao.py
 │   ├── verificar_ambiente.py
 │   ├── ollama-setup.md
 │   ├── anythingllm-setup.md
@@ -80,9 +79,9 @@ Workshop_validation/
 
 | Semana | Tema | Papel | Ferramentas |
 |--------|------|-------|-------------|
-| 2 (08–12/06) | "O chamado chegou" | Analista N2 | Copilot inline + Chat + AnythingLLM |
-| 3 (15–19/06) | "O pipeline quebrou" | Dev de plataforma | `@workspace` + MCP GitHub |
-| 4 (22–26/06) | "Tudo caiu ao mesmo tempo" | Dev + Suporte | Agent Mode + MCP GitHub + MCP SQLite |
+| 2 | "O chamado chegou" | Analista N2 | Copilot inline + Chat + AnythingLLM |
+| 3 | "O pipeline quebrou" | Dev de plataforma | `@workspace` + MCP GitHub |
+| 4 | "Tudo caiu ao mesmo tempo" | Dev + Suporte | Agent Mode + MCP GitHub + MCP SQLite |
 
 > **Antes de começar cada semana:** leia [docs/prompts/guia-prompts-profissionais.md](docs/prompts/guia-prompts-profissionais.md)  
 > Os prompts prontos para cada semana estão em `.github/prompts/`
