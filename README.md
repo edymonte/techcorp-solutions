@@ -12,14 +12,24 @@ Repositório oficial usado no **GitHub Copilot Workshop**.
 | # | O que instalar | Link | Observação |
 |---|---------------|------|------------|
 | 1 | **Python 3.11+** | https://python.org/downloads | Marque **"Add python.exe to PATH"** na instalação |
-| 2 | **Docker Desktop** | https://docker.com/products/docker-desktop | Após instalar, **abra o Docker Desktop** e aguarde a baleia aparecer na barra de tarefas |
+| 2 | **VS Code** | https://code.visualstudio.com | Instale as extensões recomendadas ao abrir o projeto |
+| 3 | **Node.js LTS** | https://nodejs.org | Necessário para os servidores MCP |
+| 4 | **Git** | https://git-scm.com | Para clonar o repositório |
+
+> **GitHub Copilot:** você precisa de uma licença ativa no VS Code.  
+> Acesse [github.com/features/copilot](https://github.com/features/copilot) para verificar.
 
 ### Iniciar o workshop
 
 ```
-1. Clone este repositório na sua máquina
-2. Dê duplo clique em  setup.bat
-3. Aguarde tudo ficar verde ✔  (pode levar ~5 min no primeiro uso)
+1. Clone este repositório:
+   git clone https://github.com/edymonte/techcorp-solutions.git
+
+2. Abra a pasta no VS Code:
+   code techcorp-solutions
+
+3. Dê duplo clique em  setup.bat
+4. Aguarde tudo ficar verde ✔  (menos de 1 minuto)
 ```
 
 > Dúvidas no setup? Consulte [setup/SETUP.md](setup/SETUP.md)
@@ -29,45 +39,40 @@ Repositório oficial usado no **GitHub Copilot Workshop**.
 ## Estrutura do Projeto
 
 ```
-Workshop_validation/
+techcorp-solutions/
 ├── .github/
-│   ├── copilot-instructions.md        ← padrões do time
-│   ├── agents/
-│   │   └── incident-responder.agent.md
+│   ├── copilot-instructions.md        ← padrões do time TechCorp
 │   └── prompts/
 │       ├── investigar-bug-ticket.prompt.md
 │       ├── corrigir-pipeline.prompt.md
 │       └── resposta-incidente-multiplo.prompt.md
+├── .vscode/
+│   ├── extensions.json                ← extensões recomendadas (instale ao abrir)
+│   ├── settings.json                  ← configurações do workshop
+│   └── mcp.json                       ← MCP GitHub + MCP SQLite
 ├── docs/
-│   ├── facilitador/
-│   │   └── roteiro-facilitador.md     ← roteiro do facilitador
-│   ├── prompts/
-│   │   └── guia-prompts-profissionais.md
+│   ├── known-issues.md                ← problemas conhecidos (leia antes de começar!)
 │   ├── runbooks/
 │   ├── arquitetura/
 │   ├── suporte/
 │   └── pipelines/
-├── evidencias/                        ← HTMLs gerados pelo script
+├── evidencias/                        ← HTMLs gerados ao final de cada etapa
 ├── src/
 │   ├── api/pedidos.py
 │   ├── auth/auth_service.py
 │   └── pedidos/processador.py
 ├── tickets/
-│   ├── ticket-001.md
-│   ├── ticket-002.md
-│   └── ticket-003.md
+│   ├── ticket-001.md                  ← Etapa 1 — ESSENCIAL
+│   ├── ticket-002.md                  ← Etapa 2 — INTERMEDIÁRIO
+│   └── ticket-003.md                  ← Etapa 3 — CHALLENGE
 ├── db/
 │   ├── init_db.py
-│   └── techcorp.db                    ← gerado pelo setup.bat
+│   └── techcorp.db                    ← gerado automaticamente pelo setup.bat
 ├── setup/
 │   ├── SETUP.md
 │   ├── gerar_evidencia.py
-│   ├── gerar_apresentacao.py
 │   ├── verificar_ambiente.py
-│   ├── ollama-setup.md
-│   ├── anythingllm-setup.md
 │   └── mcp-setup.md
-├── docker-compose.yml                 ← Ollama + AnythingLLM em container
 ├── setup.bat                          ← setup com um clique
 ├── requirements.txt
 └── requirements-dev.txt
@@ -75,30 +80,31 @@ Workshop_validation/
 
 ---
 
-## Semanas do Workshop
+## Etapas do Workshop
 
-| Semana | Tema | Papel | Ferramentas |
-|--------|------|-------|-------------|
-| 2 | "O chamado chegou" | Analista N2 | Copilot inline + Chat + AnythingLLM |
-| 3 | "O pipeline quebrou" | Dev de plataforma | `@workspace` + MCP GitHub |
-| 4 | "Tudo caiu ao mesmo tempo" | Dev + Suporte | Agent Mode + MCP GitHub + MCP SQLite |
+| Etapa | Nível | Tema | Ferramentas |
+|-------|-------|------|-------------|
+| 1 | 🟢 ESSENCIAL | "O chamado chegou" — debugging com Copilot | Copilot Chat + Inline |
+| 2 | 🟡 INTERMEDIÁRIO | "O pipeline quebrou" — CI com Copilot | `@workspace` + MCP GitHub |
+| 3 | 🔴 CHALLENGE | "Tudo caiu ao mesmo tempo" — Agent Mode | Agent Mode + MCP SQLite |
 
-> **Antes de começar cada semana:** leia [docs/prompts/guia-prompts-profissionais.md](docs/prompts/guia-prompts-profissionais.md)  
-> Os prompts prontos para cada semana estão em `.github/prompts/`
+> **Antes de começar cada etapa:** leia o ticket correspondente em `tickets/`  
+> Dica: confira `docs/known-issues.md` — pode ter pistas úteis!  
+> Os prompts prontos estão em `.github/prompts/`
 
 ---
 
 ## Gerar evidência de conclusão
 
-Ao terminar os objetivos de uma semana, gere a tela de evidência para a competição:
+Ao terminar os objetivos de uma etapa, gere a tela de evidência para a competição:
 
 ```bash
+python setup/gerar_evidencia.py --semana 1 --nome "João Silva" --parceiro "Ana Lima"
 python setup/gerar_evidencia.py --semana 2 --nome "João Silva" --parceiro "Ana Lima"
 python setup/gerar_evidencia.py --semana 3 --nome "João Silva" --parceiro "Ana Lima"
-python setup/gerar_evidencia.py --semana 4 --nome "João Silva" --parceiro "Ana Lima"
 ```
 
-O script valida automaticamente os critérios da semana, gera um HTML em `evidencias/` e abre no navegador.  
+O script valida automaticamente os critérios da etapa, gera um HTML em `evidencias/` e abre no navegador.  
 Use **Print → Salvar como PDF** ou **screenshot** para entregar na competição.
 
 ---
@@ -117,9 +123,9 @@ O roteiro completo de condução (blocos de tempo, falas sugeridas, perguntas de
 |-----------|----------|
 | Windows 10/11 | Sistema operacional |
 | Python 3.11+ | Rodar o código da TechCorp e os testes |
-| Node.js LTS | MCP GitHub (Semana 3 e 4) |
+| Node.js LTS | Servidores MCP (GitHub e SQLite) |
+| Git | Clonar o repositório |
 | VS Code + GitHub Copilot | Editor + IA |
-| Docker Desktop | Roda Ollama e AnythingLLM em container — sem instalação separada |
 
 Ver instruções detalhadas em [setup/SETUP.md](setup/SETUP.md).
 

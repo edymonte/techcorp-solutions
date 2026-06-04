@@ -20,9 +20,9 @@ Escale o chamado imediatamente quando:
 
 ## Níveis de Escalação
 
-### N1 — Bot / AnythingLLM
+### N1 — Bot de Suporte TechCorp
 - Triagem inicial baseada nos runbooks de `docs/runbooks/`
-- Responde perguntas frequentes automaticamente
+- Responde perguntas frequentes automaticamente via GitHub Copilot
 - Se não encontrar solução: marca o ticket como `aguardando-N2`
 
 ### N2 — Analistas de Suporte
