@@ -1,6 +1,6 @@
 # SETUP — TechCorp Solutions Workshop
 
-> Tempo estimado: **30 minutos**  
+> Tempo estimado: **15 minutos**  
 > Sistema operacional: **Windows 10/11**  
 > Pré-requisito: conta no GitHub com GitHub Copilot ativo
 
@@ -11,11 +11,11 @@
 | # | Ferramenta | Para que serve |
 |---|-----------|----------------|
 | 1 | Git + VS Code | Editor + controle de versão |
-| 2 | Python 3.11 | Executar o código da TechCorp |
-| 3 | Ollama + llama3.2 | LLM local (N1 — sem internet) |
-| 4 | AnythingLLM | Interface visual do N1 + RAG dos docs |
-| 5 | Node.js | Necessário para o MCP GitHub |
-| 6 | Fork do repositório | Sua cópia do projeto TechCorp |
+| 2 | Python 3.11+ | Executar o código da TechCorp |
+| 3 | Docker Desktop | Roda Ollama e AnythingLLM em container |
+| 4 | Node.js | Necessário para o MCP GitHub |
+
+> **Ollama e AnythingLLM rodam via Docker** — não é necessário instalar nada separado para eles. O `setup.bat` cuida de tudo automaticamente.
 
 ---
 
@@ -33,56 +33,37 @@ No VS Code, instalar a extensão **GitHub Copilot**:
 
 ---
 
-## Passo 2 — Python 3.11
+## Passo 2 — Python 3.11+
 
 1. Acessar https://www.python.org/downloads/
-2. Baixar **Python 3.11.x** (Windows installer 64-bit)
+2. Baixar **Python 3.11.x** ou superior (Windows installer 64-bit)
 3. Na instalação: **marcar "Add python.exe to PATH"** ← importante!
 4. Clicar em "Install Now"
 
 Verificar:
 ```
 python --version
-# deve exibir: Python 3.11.x
+# deve exibir: Python 3.11.x ou superior
 ```
 
 ---
 
-## Passo 3 — Ollama (LLM local)
+## Passo 3 — Docker Desktop
 
-Ver guia detalhado: [setup/ollama-setup.md](ollama-setup.md)
+1. Acessar https://docker.com/products/docker-desktop
+2. Baixar e instalar o **Docker Desktop for Windows**
+3. Após instalar, **abrir o Docker Desktop** e aguardar a baleia aparecer na barra de tarefas
+4. Verificar no terminal:
 
-**Resumo rápido:**
 ```
-# 1. Baixar em https://ollama.com/download → Windows
-# 2. Instalar (next, next, finish)
-# 3. No terminal:
-ollama pull llama3.2
-# aguardar download (~2GB)
-
-# 4. Testar:
-ollama run llama3.2
-# digite "oi" e pressione Enter — deve responder
-# Ctrl+D para sair
+docker --version
 ```
+
+> O Docker Desktop deve estar aberto e rodando **antes** de executar o `setup.bat`.
 
 ---
 
-## Passo 4 — AnythingLLM
-
-Ver guia detalhado: [setup/anythingllm-setup.md](anythingllm-setup.md)
-
-**Resumo rápido:**
-1. Baixar em https://anythingllm.com/ → Download for Windows
-2. Instalar e abrir
-3. Em **LLM Preference**: selecionar **Ollama** → URL: `http://localhost:11434` → Model: `llama3.2`
-4. Criar um Workspace chamado **"TechCorp N1"**
-5. Em **Document Settings**: apontar para a pasta `docs/` do repositório
-6. Clicar em **"Sync"** para indexar os documentos
-
----
-
-## Passo 5 — Node.js (para MCP GitHub)
+## Passo 4 — Node.js (para MCP GitHub)
 
 1. Acessar https://nodejs.org/
 2. Baixar **LTS version** (Windows Installer)
@@ -95,7 +76,7 @@ node --version
 npx --version
 ```
 
-Ver guia de configuração do MCP: [setup/mcp-setup.md](mcp-setup.md)
+Ver guia de configuração do MCP: [mcp-setup.md](mcp-setup.md)
 
 ---
 
@@ -106,44 +87,37 @@ Ver guia de configuração do MCP: [setup/mcp-setup.md](mcp-setup.md)
 3. Abrir o terminal no Windows e clonar **sua fork**:
 
 ```bash
-git clone https://github.com/SEU-USUARIO/techcorp-solutions.git
-cd techcorp-solutions
+git clone https://github.com/[instrutor]/techcorp-workshop.git
+cd techcorp-workshop
 ```
 
-4. Abrir no VS Code:
+Abrir no VS Code:
 ```bash
 code .
 ```
 
 ---
 
-## Passo 7 — Instalar dependências Python
+## Passo 6 — Executar o setup.bat
 
-```bash
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+Dê duplo clique em **`setup.bat`** na raiz do projeto, ou execute no terminal:
+
 ```
+setup.bat
+```
+
+O script realiza automaticamente:
+1. Instala as dependências Python (`requirements.txt` e `requirements-dev.txt`)
+2. Cria o banco de dados SQLite (`db/techcorp.db`) com os tickets do workshop
+3. Inicia Ollama e AnythingLLM via Docker (`docker compose up -d`)
+4. Baixa o modelo `llama3.2` no container Ollama (se ainda não estiver)
+5. Executa `setup/verificar_ambiente.py` para validar tudo
+
+> Na primeira execução pode levar **~5 minutos** devido ao download do modelo (~2GB).
 
 ---
 
-## Passo 8 — Inicializar o banco de dados
-
-```bash
-python db/init_db.py
-```
-
-Deve exibir:
-```
-Banco criado em: db/techcorp.db
-Chamados inseridos:
-  TICKET-001 | Falha no Processamento de Pedidos | P1 | aberto
-  TICKET-002 | Pipeline de Produção Bloqueado | P2 | aberto
-  TICKET-003 | Incidente Crítico: Múltiplas Falhas Simultâneas | P1 | aberto
-```
-
----
-
-## Passo 9 — Configurar MCP no VS Code
+## Passo 7 — Configurar MCP no VS Code
 
 1. Abrir `.vscode/mcp.json` no VS Code
 2. Criar um **Personal Access Token** no GitHub:
@@ -152,6 +126,17 @@ Chamados inseridos:
    - Marcar: `repo`, `read:org`
    - Copiar o token
 3. No VS Code, quando o MCP solicitar o token, colar o valor
+
+---
+
+## Passo 8 — Configurar o workspace no AnythingLLM
+
+Após o `setup.bat` concluir, o AnythingLLM estará acessível em **http://localhost:3001**.
+
+A pasta `docs/` do projeto já é montada automaticamente no container.
+Ainda assim é necessário criar o workspace e indexar os documentos uma vez:
+
+Ver guia completo: [anythingllm-setup.md](anythingllm-setup.md)
 
 ---
 
@@ -185,11 +170,10 @@ O script verifica automaticamente:
 
 > **Nota sobre os testes com falha:** `test_token_expirado_deve_ser_rejeitado` e `test_pedido_quantidade_none_deve_levantar_pedido_invalido_error` vão **falhar propositalmente** — esses são os bugs que você vai corrigir nas semanas 2 e 4.
 
-Se algum item aparecer com `✘`, seguir a dica exibida pelo script.  
-Se travar, consultar `docs/runbooks/pipeline-troubleshooting.md`.
+Se algum item aparecer com `✘`, seguir a dica exibida pelo script.
 
 ---
 
 ## Pronto!
 
-Seu ambiente está configurado. Aguarde as instruções do instrutor para começar o desafio.
+Seu ambiente está configurado. Aguarde as instruções do facilitador para começar.

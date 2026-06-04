@@ -84,7 +84,7 @@ No chat do Copilot (`Ctrl+Shift+I`), perguntar:
 @github liste as issues abertas neste repositório
 ```
 
-Deve listar as issues da sua fork.
+deve listar as issues deste repositório.
 
 ---
 

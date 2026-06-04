@@ -20,6 +20,13 @@ env/
 # Banco de dados (gerado pelo init_db.py — não commitar dados locais)
 db/techcorp.db
 
+# Evidências geradas pelos participantes
+evidencias/*.html
+
+# Apresentação gerada (binário, não versionado)
+docs/*.pptx
+*.pptx
+
 # Logs
 logs/
 *.log
@@ -27,6 +34,11 @@ logs/
 # VS Code (manter apenas mcp.json)
 .vscode/*
 !.vscode/mcp.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # Sistema operacional
 .DS_Store
