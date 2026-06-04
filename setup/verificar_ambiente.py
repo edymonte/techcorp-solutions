@@ -91,26 +91,56 @@ for modulo, origem in pacotes.items():
 # ─────────────────────────────────────────────
 titulo("3. Testes da aplicação")
 
+# Testes que DEVEM falhar antes das correções do workshop (bugs intencionais)
+BUGS_INTENCIONAIS = {
+    "test_pedido_quantidade_none_deve_levantar_pedido_invalido_error":
+        "Bug intencional Semana 2 (TICKET-001) — corrija em src/api/pedidos.py",
+    "test_token_expirado_deve_ser_rejeitado":
+        "Bug intencional Semana 4 (TICKET-003) — corrija em src/auth/auth_service.py",
+    "test_token_expirado_nao_pode_obter_perfil":
+        "Bug intencional Semana 4 (TICKET-003) — corrija em src/auth/auth_service.py",
+}
+
 raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 resultado = subprocess.run(
-    [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=no", "-q"],
+    [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=no"],
     capture_output=True,
     text=True,
     cwd=raiz,
 )
-linhas = resultado.stdout.strip().splitlines()
-for linha in linhas:
-    if "passed" in linha or "failed" in linha or "error" in linha:
-        if "failed" in linha or "error" in linha:
-            erro(f"pytest: {linha.strip()}", "Revise os erros acima — alguns são intencionais (bugs do workshop)")
+
+# Classifica cada linha de resultado FAILED
+falhas_inesperadas = []
+falhas_intencionais = []
+for linha in resultado.stdout.splitlines():
+    if " FAILED " in linha:
+        nome_teste = linha.split("::")[-1].split(" ")[0]
+        if nome_teste in BUGS_INTENCIONAIS:
+            falhas_intencionais.append((nome_teste, BUGS_INTENCIONAIS[nome_teste]))
         else:
-            ok(f"pytest: {linha.strip()}")
-        break
+            falhas_inesperadas.append(linha.strip())
+
+# Contagem geral
+sumario = next(
+    (l for l in resultado.stdout.splitlines() if "passed" in l or "failed" in l),
+    None,
+)
+
+if falhas_inesperadas:
+    dica = "Execute: pytest tests/ -v  para detalhes"
+    erro(f"pytest: falhas inesperadas encontradas", dica)
+    for f in falhas_inesperadas:
+        print(f"     {VERMELHO}↳ {f}{RESET}")
+elif sumario:
+    # Extrai só a contagem (ex: "3 failed, 36 passed")
+    partes = [p.strip() for p in sumario.split("=") if p.strip() and "in" in p]
+    resumo = partes[0] if partes else sumario.strip()
+    ok(f"pytest: {resumo}")
 else:
-    if resultado.returncode == 0:
-        ok("pytest: todos os testes passaram")
-    else:
-        erro("pytest retornou erro", "Execute: pytest tests/ -v  para detalhes")
+    ok("pytest: concluído")
+
+for nome, descricao in falhas_intencionais:
+    aviso(f"pytest (esperado): {nome}", descricao)
 
 # ─────────────────────────────────────────────
 titulo("4. Banco de dados SQLite")
