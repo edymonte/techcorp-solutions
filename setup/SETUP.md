@@ -67,8 +67,8 @@ Ver guia de configuração do MCP: [mcp-setup.md](mcp-setup.md)
 ## Passo 4 — Clonar o repositório
 
 ```bash
-git clone https://github.com/[instrutor]/techcorp-workshop.git
-cd techcorp-workshop
+git clone https://github.com/edymonte/techcorp-solutions
+cd techcorp-solutions
 ```
 
 Abrir no VS Code:
