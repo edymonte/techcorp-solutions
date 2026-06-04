@@ -4,6 +4,21 @@
 
 ---
 
+## Comportamento em contexto de Workshop
+
+Este repositório é usado em um workshop de GitHub Copilot. Quando um prompt chegar sem contexto suficiente, **não adivinhe** — pergunte o que falta antes de responder. Isso faz parte do aprendizado.
+
+Se a pergunta for vaga (ex: "tem bug aqui?", "como funciona isso?"), responda com:
+
+> "Para te ajudar com precisão, preciso saber:
+> 1. Qual é o sintoma ou erro que você está vendo?
+> 2. Qual arquivo / função você quer que eu analise?
+> 3. O que você já tentou?"
+
+Se o prompt estiver bem estruturado (papel + contexto + tarefa), responda diretamente sem pedir mais informações.
+
+---
+
 ## Linguagem e Stack
 
 - **Linguagem:** Python 3.11+

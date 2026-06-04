@@ -1,56 +1,77 @@
-# Guia de Instalação — Ollama (Windows)
+# Guia do Ollama — Workshop TechCorp
 
-**Tempo estimado:** 10 minutos (+ tempo de download do modelo ~2GB)
-
----
-
-## O que é o Ollama?
-
-O Ollama permite rodar modelos de linguagem (LLMs) **100% local**, sem internet e sem conta em nenhum serviço. No workshop ele faz o papel do **N1** — o agente de triagem automatizado da TechCorp.
+> O Ollama **não precisa ser instalado** na máquina.  
+> Ele roda via Docker, iniciado automaticamente pelo `setup.bat`.
 
 ---
 
-## Instalação
+## Como o Ollama é iniciado
 
-### 1. Baixar o instalador
-
-Acessar: **https://ollama.com/download**
-
-Clicar em **"Download for Windows"** e executar o instalador `.exe`.
-
-A instalação é simples: next → next → finish. O Ollama roda em background automaticamente.
-
-### 2. Verificar que está rodando
-
-Abrir o terminal e digitar:
-```bash
-ollama --version
-```
-
-Deve exibir algo como: `ollama version 0.5.x`
-
-Se não reconhecer o comando, reiniciar o terminal ou o computador.
-
-### 3. Baixar o modelo llama3.2
+O `setup.bat` executa:
 
 ```bash
-ollama pull llama3.2
+docker compose up -d
 ```
 
-> Download de ~2GB. Pode demorar dependendo da internet.
+Isso sobe o container `techcorp-ollama` com a imagem `ollama/ollama:latest`.
+Na primeira execução, o script também baixa o modelo `llama3.2` automaticamente (~2GB).
 
-### 4. Testar o modelo
+---
+
+## Verificar se está rodando
+
+A API do Ollama fica acessível em `http://localhost:11434`.
+
+Via terminal:
+```bash
+curl http://localhost:11434
+# deve retornar: Ollama is running
+```
+
+Ou acessar no navegador: http://localhost:11434
+
+Verificar o modelo instalado:
+```bash
+docker exec techcorp-ollama ollama list
+```
+
+Deve listar `llama3.2`.
+
+---
+
+## Parar / reiniciar
 
 ```bash
-ollama run llama3.2
+# parar
+docker compose stop ollama
+
+# reiniciar
+docker compose start ollama
+
+# ver logs
+docker logs techcorp-ollama
 ```
 
-Digite uma pergunta, por exemplo:
-```
-O que causa ModuleNotFoundError em Python?
+---
+
+## Baixar o modelo manualmente (se necessário)
+
+Se o modelo não foi baixado automaticamente:
+
+```bash
+docker exec techcorp-ollama ollama pull llama3.2
 ```
 
-Deve responder em texto. Pressione `Ctrl+D` ou `Ctrl+C` para sair.
+---
+
+## Solução de problemas
+
+| Sintoma | O que fazer |
+|---------|-------------|
+| `curl` não responde | Verifique se o Docker Desktop está aberto e rode `docker compose up -d` |
+| Container não sobe | Rode `docker logs techcorp-ollama` para ver o erro |
+| Modelo não encontrado | Execute `docker exec techcorp-ollama ollama pull llama3.2` |
+| Porta 11434 em uso | Pare qualquer instalação local do Ollama antes de usar o container |
 
 ---
 

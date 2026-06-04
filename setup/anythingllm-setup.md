@@ -1,41 +1,110 @@
-# Guia de Instalação — AnythingLLM (Windows)
+# Guia do AnythingLLM — Workshop TechCorp
 
-**Tempo estimado:** 10 minutos
+> O AnythingLLM **não precisa ser instalado** na máquina.  
+> Ele roda via Docker, iniciado automaticamente pelo `setup.bat`.
 
 ---
 
 ## O que é o AnythingLLM?
 
-O AnythingLLM é uma interface visual que conecta ao Ollama e permite fazer **RAG (Retrieval-Augmented Generation)** — ou seja, o modelo responde perguntas com base em documentos que você indexar. No workshop ele é o **N1 da TechCorp**: indexa a pasta `docs/` e responde perguntas dos analistas com base nos runbooks.
+O AnythingLLM é uma interface visual que conecta ao Ollama e permite fazer **RAG (Retrieval-Augmented Generation)** — o modelo responde perguntas com base em documentos indexados. No workshop ele é o **N1 da TechCorp**: consulta os runbooks e responde perguntas dos analistas.
 
 ---
 
-## Instalação
+## Como é iniciado
 
-### 1. Baixar o instalador
+O `setup.bat` executa:
 
-Acessar: **https://anythingllm.com/**
+```bash
+docker compose up -d
+```
 
-Clicar em **"Download for Windows"** e executar o `.exe`.
-
-### 2. Abrir o AnythingLLM
-
-Após instalação, abrir o app. Na primeira execução ele vai pedir para configurar o LLM.
+Isso sobe o container `techcorp-anythingllm` com a imagem `mintplexlabs/anythingllm:latest`.
+A pasta `docs/` do projeto é montada automaticamente como diretório de documentos do container.
 
 ---
 
-## Configuração
+## Acessar a interface
+
+Após o `setup.bat` concluir, abrir no navegador:
+
+**http://localhost:3001**
+
+---
+
+## Configurar o workspace (feito uma vez)
+
+Na primeira vez que acessar, configure o AnythingLLM para usar o Ollama do container:
 
 ### Passo 1 — Conectar ao Ollama
 
-Na tela inicial ou em **Settings > LLM Preference**:
+Em **Settings > LLM Preference**:
 
 - **LLM Provider:** Ollama
-- **Ollama Base URL:** `http://localhost:11434`
+- **Ollama Base URL:** `http://ollama:11434`  
+  *(use `ollama` como hostname — é o nome do serviço Docker, não `localhost`)*
 - **Model:** `llama3.2`
 - Clicar em **Save**
 
-> O Ollama precisa estar rodando. Se não estiver, abrir o terminal e digitar `ollama serve`.
+### Passo 2 — Criar o Workspace do N1
+
+1. Na tela principal, clicar em **"+ New Workspace"**
+2. Nome: **TechCorp N1**
+3. Clicar em **Create**
+
+### Passo 3 — Indexar os documentos da TechCorp
+
+1. Dentro do workspace **TechCorp N1**, clicar no ícone de documentos
+2. Os arquivos da pasta `docs/` já aparecem listados (montagem automática do container)
+3. Selecionar todos e clicar em **"Move to Workspace"**
+4. Clicar em **"Save and Embed"** — aguardar o embedding
+
+Documentos que devem aparecer:
+- `runbooks/pedidos-falha.md`
+- `runbooks/auth-reset.md`
+- `runbooks/pipeline-troubleshooting.md`
+- `arquitetura/visao-geral.md`
+- `suporte/sla.md`
+- `suporte/escalation-policy.md`
+- `pipelines/padrao-ci.md`
+
+---
+
+## Testar o N1
+
+No chat do workspace **TechCorp N1**, fazer uma pergunta de teste:
+
+```
+O que pode causar falha no processamento de pedidos?
+```
+
+O N1 deve responder citando o `runbook/pedidos-falha.md`. Se não mencionar o runbook, verificar se os documentos foram embedados corretamente.
+
+---
+
+## Parar / reiniciar
+
+```bash
+# parar
+docker compose stop anythingllm
+
+# reiniciar
+docker compose start anythingllm
+
+# ver logs
+docker logs techcorp-anythingllm
+```
+
+---
+
+## Solução de problemas
+
+| Sintoma | O que fazer |
+|---------|-------------|
+| http://localhost:3001 não abre | Verifique se o Docker está rodando e execute `docker compose up -d` |
+| Ollama não conecta no AnythingLLM | Confirme que a URL está como `http://ollama:11434` (não `localhost`) |
+| Documentos não aparecem | Execute `docker logs techcorp-anythingllm` para verificar a montagem da pasta |
+| Resposta não cita runbooks | Verifique se os documentos foram embedados (botão "Save and Embed") |
 
 ### Passo 2 — Criar o Workspace do N1
 

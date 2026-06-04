@@ -126,7 +126,12 @@ titulo("5. Node.js / npx")
 
 for cmd in ["node", "npx"]:
     try:
-        res = subprocess.run([cmd, "--version"], capture_output=True, text=True)
+        res = subprocess.run(
+            [cmd, "--version"],
+            capture_output=True,
+            text=True,
+            shell=(sys.platform == "win32"),
+        )
         if res.returncode == 0:
             ok(f"{cmd} {res.stdout.strip()}")
         else:
@@ -138,16 +143,27 @@ for cmd in ["node", "npx"]:
 titulo("6. Ollama (LLM local)")
 
 if not checar_http("http://localhost:11434", "Ollama"):
-    erro("Ollama não está rodando", "Abra o Ollama pelo menu Iniciar ou execute: ollama serve")
+    erro("Ollama não está rodando", "Execute: docker compose up -d")
 else:
-    # Verificar se llama3.2 está instalado
-    try:
-        res = subprocess.run(["ollama", "list"], capture_output=True, text=True)
-        if "llama3.2" in res.stdout:
-            ok("Modelo llama3.2 disponível")
-        else:
-            aviso("Modelo llama3.2 não encontrado", "Execute: ollama pull llama3.2  (~2GB de download)")
-    except FileNotFoundError:
+    # Verifica modelo: tenta via Docker primeiro, depois via CLI local
+    modelo_verificado = False
+    for check_cmd in (
+        ["docker", "exec", "techcorp-ollama", "ollama", "list"],
+        ["ollama", "list"],
+    ):
+        try:
+            res = subprocess.run(check_cmd, capture_output=True, text=True, timeout=5)
+            if res.returncode == 0:
+                if "llama3.2" in res.stdout:
+                    ok("Modelo llama3.2 disponível")
+                else:
+                    aviso("Modelo llama3.2 não encontrado",
+                          "Execute: docker exec techcorp-ollama ollama pull llama3.2")
+                modelo_verificado = True
+                break
+        except Exception:
+            continue
+    if not modelo_verificado:
         aviso("Não foi possível verificar modelos do Ollama")
 
 # ─────────────────────────────────────────────
@@ -156,7 +172,7 @@ titulo("7. AnythingLLM (interface RAG)")
 if not checar_http("http://localhost:3001", "AnythingLLM"):
     aviso(
         "AnythingLLM não está rodando",
-        "Abra o aplicativo AnythingLLM pelo menu Iniciar",
+        "Execute: docker compose up -d",
     )
 
 # ─────────────────────────────────────────────

@@ -1,0 +1,49 @@
+# TechCorp Solutions Workshop — Serviços de IA em Container
+#
+# Uso:
+#   Iniciar:  docker compose up -d
+#   Parar:    docker compose down
+#   Logs:     docker compose logs -f
+#   Resetar:  docker compose down -v   ← apaga volumes (modelos e dados)
+
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: techcorp-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    container_name: techcorp-anythingllm
+    ports:
+      - "3001:3001"
+    volumes:
+      - anythingllm_storage:/app/server/storage
+      - ./docs:/app/server/storage/hotdir:ro   # docs da TechCorp disponíveis para importar
+    environment:
+      STORAGE_DIR: /app/server/storage
+      LLM_PROVIDER: ollama
+      OLLAMA_BASE_PATH: http://ollama:11434     # nome do serviço Docker, não localhost
+      OLLAMA_MODEL_PREF: llama3.2
+      OLLAMA_MODEL_TOKEN_LIMIT: "4096"
+      JWT_SECRET: techcorp-workshop-jwt-secret
+      DISABLE_TELEMETRY: "true"
+    depends_on:
+      ollama:
+        condition: service_healthy             # só sobe depois que Ollama estiver pronto
+    restart: unless-stopped
+
+volumes:
+  ollama_data:        # modelos Ollama (~2GB, baixados uma vez)
+  anythingllm_storage: # workspaces e índices RAG do AnythingLLM
