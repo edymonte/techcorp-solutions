@@ -27,6 +27,17 @@ evidencias/*.html
 docs/*.pptx
 *.pptx
 
+# Arquivos exclusivos do facilitador — não expor ao participante
+docs/facilitador/
+Overview/
+setup/gerar_apresentacao.py
+
+# Gabarito de prompts — destrói o exercício se exposto
+docs/prompts/guia-prompts-profissionais.md
+
+# Known issues revela o bug do exercício principal (Semana 1)
+docs/known-issues.md
+
 # Logs
 logs/
 *.log
