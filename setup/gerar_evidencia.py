@@ -7,6 +7,8 @@ Uso:
     python setup/gerar_evidencia.py --semana 3 --nome "Ana Lima"
     python setup/gerar_evidencia.py --semana 4 --nome "Carlos Mota"
 
+Cada participante gera sua própria evidência individualmente.
+
 A evidência gerada é salva em evidencias/ e aberta no navegador.
 """
 
@@ -199,8 +201,8 @@ def _gerar_codigo_unico(nome: str, semana: int, timestamp: str) -> str:
     return "TC-" + hashlib.sha256(raw.encode()).hexdigest()[:8].upper()
 
 
-def gerar_html(nome: str, parceiro: str, semana: int, info: dict, resultados: list[dict], aprovado: bool, timestamp: str) -> str:
-    codigo = _gerar_codigo_unico(nome + "|" + parceiro, semana, timestamp)
+def gerar_html(nome: str, semana: int, info: dict, resultados: list[dict], aprovado: bool, timestamp: str) -> str:
+    codigo = _gerar_codigo_unico(nome, semana, timestamp)
     status_class = "aprovado" if aprovado else "pendente"
     status_label = "OBJETIVO ALCANÇADO" if aprovado else "PENDENTE — critérios não atendidos"
     status_icon = "✓" if aprovado else "✗"
@@ -222,7 +224,7 @@ def gerar_html(nome: str, parceiro: str, semana: int, info: dict, resultados: li
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evidência · Semana {semana} · {nome} &amp; {parceiro}</title>
+  <title>Evidência · Semana {semana} · {nome}</title>
   <style>
     *{{box-sizing:border-box;margin:0;padding:0}}
     body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
@@ -330,8 +332,6 @@ def gerar_html(nome: str, parceiro: str, semana: int, info: dict, resultados: li
           <div class="b-text">
             <div class="bl">{status_label}</div>
             <div class="bnome">{nome}</div>
-            <div class="bsep">+ dupla</div>
-            <div class="bnome2">{parceiro}</div>
           </div>
         </div>
       </div>
@@ -389,20 +389,17 @@ def main():
     parser.add_argument("--semana", type=int, required=True, choices=[2, 3, 4],
                         help="Número da semana (2, 3 ou 4)")
     parser.add_argument("--nome", type=str, required=True,
-                        help='Nome do primeiro participante (ex: "João Silva")')
-    parser.add_argument("--parceiro", type=str, required=True,
-                        help='Nome do segundo participante (ex: "Ana Lima")')
+                        help='Nome do participante (ex: "João Silva")')
     args = parser.parse_args()
 
     nome = args.nome.strip()
-    parceiro = args.parceiro.strip()
     semana = args.semana
     info = SEMANAS[semana]
 
     print()
     print(f"  TechCorp Solutions — Workshop GitHub Copilot")
     print(f"  Gerando evidência · Semana {semana} · {info['titulo']}")
-    print(f"  Dupla: {nome}  &  {parceiro}")
+    print(f"  Participante: {nome}")
     print()
 
     resultados = []
@@ -417,21 +414,20 @@ def main():
     print()
 
     if aprovado:
-        print("  ✔  Todos os critérios atendidos — APROVADO")
+        print("  [OK] Todos os criterios atendidos -- APROVADO")
     else:
         falhas = sum(1 for r in resultados if not r["passou"])
-        print(f"  ✘  {falhas} critério(s) não atendido(s) — verifique os itens acima")
+        print(f"  [!!] {falhas} criterio(s) nao atendido(s) -- verifique os itens acima")
 
     # Gerar HTML
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_arquivo = re.sub(r"[^\w]", "_", nome.lower())
-    parceiro_arquivo = re.sub(r"[^\w]", "_", parceiro.lower())
     pasta = os.path.join(ROOT, "evidencias")
     os.makedirs(pasta, exist_ok=True)
-    nome_html = f"semana{semana}_{nome_arquivo}_{parceiro_arquivo}_{timestamp}.html"
+    nome_html = f"semana{semana}_{nome_arquivo}_{timestamp}.html"
     caminho_html = os.path.join(pasta, nome_html)
 
-    html = gerar_html(nome, parceiro, semana, info, resultados, aprovado, timestamp)
+    html = gerar_html(nome, semana, info, resultados, aprovado, timestamp)
     with open(caminho_html, "w", encoding="utf-8") as f:
         f.write(html)
 
