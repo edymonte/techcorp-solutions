@@ -3,9 +3,9 @@
 TechCorp Solutions — Gerador de Evidências do Workshop GitHub Copilot
 
 Uso:
-    python setup/gerar_evidencia.py --semana 2 --nome "João Silva"
-    python setup/gerar_evidencia.py --semana 3 --nome "Ana Lima"
-    python setup/gerar_evidencia.py --semana 4 --nome "Carlos Mota"
+    python setup/gerar_evidencia.py --semana 1 --nome "João Silva"
+    python setup/gerar_evidencia.py --semana 2 --nome "Ana Lima"
+    python setup/gerar_evidencia.py --semana 3 --nome "Carlos Mota"
 
 Cada participante gera sua própria evidência individualmente.
 
@@ -34,7 +34,7 @@ os.chdir(ROOT)
 # ─────────────────────────────────────────────────────────────────────────────
 
 SEMANAS = {
-    2: {
+    1: {
         "titulo": "Debugging com GitHub Copilot",
         "objetivo": (
             "Identificar e corrigir o bug de validação de pedidos (Ticket-001) "
@@ -58,7 +58,7 @@ SEMANAS = {
             },
         ],
     },
-    3: {
+    2: {
         "titulo": "Corrigindo Pipeline CI com Copilot",
         "objetivo": (
             "Diagnosticar e corrigir a falha no pipeline GitHub Actions (Ticket-002). "
@@ -89,7 +89,7 @@ SEMANAS = {
             },
         ],
     },
-    4: {
+    3: {
         "titulo": "Segurança e Agent Mode",
         "objetivo": (
             "Identificar e corrigir a vulnerabilidade JWT (Ticket-003 — P1 Crítico). "
@@ -386,8 +386,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Gera evidência de conclusão de semana do workshop."
     )
-    parser.add_argument("--semana", type=int, required=True, choices=[2, 3, 4],
-                        help="Número da semana (2, 3 ou 4)")
+    parser.add_argument("--semana", type=int, required=True, choices=[1, 2, 3],
+                        help="Número da semana (1, 2 ou 3)")
     parser.add_argument("--nome", type=str, required=True,
                         help='Nome do participante (ex: "João Silva")')
     args = parser.parse_args()
